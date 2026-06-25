@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODIN — 만드는 모든 것을 서비스로</title>
+  <meta name="description" content="CODIN은 기획부터 디자인, 개발, 운영까지 하나의 팀에서 완결하는 프로덕트 컴퍼니입니다. 사람들이 매일 쓰는 앱 서비스를 만듭니다.">
+  <meta property="og:title" content="CODIN — 만드는 모든 것을 서비스로">
+  <meta property="og:description" content="기획·디자인·개발·운영을 한 팀에서. CODIN이 만드는 앱 서비스를 만나보세요.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#050505">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'Pretendard', 'sans-serif'],
+          },
+          colors: {
+            ink: '#050505',
+            accent: '#5fe3a1',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background-color: #050505;
+      color: #ededed;
+      -webkit-font-smoothing: antialiased;
+    }
+    .break-keep { word-break: keep-all; }
+
+    /* Ambient mesh orbs */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-18px) translateX(8px); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(20px) scale(1.05); }
+    }
+    .orb { will-change: transform; }
+    .orb-1 { animation: float 9s cubic-bezier(0.45,0,0.55,1) infinite; }
+    .orb-2 { animation: floatSlow 12s cubic-bezier(0.45,0,0.55,1) infinite; }
+
+    /* Scroll reveal */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(2rem); filter: blur(6px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    .reveal { opacity: 0; }
+    .reveal.in { animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(var(--i, 0) * 90ms); }
+
+    /* Marquee */
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .marquee-track { animation: marquee 32s linear infinite; }
+    .marquee-mask {
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    }
+
+    /* Signature transition */
+    .sig { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* Grain */
+    .grain::after {
+      content: "";
+      position: fixed; inset: 0; z-index: 60; pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .text-gradient {
+      background: linear-gradient(180deg, #ffffff 30%, #8a8a8a 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    /* nav reduce */
+    .mobile-menu { transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+  </style>
+</head>
+<body class="grain antialiased overflow-x-hidden">
+
+  <!-- Ambient background -->
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="orb orb-1 absolute -top-32 -left-24 w-[40rem] h-[40rem] rounded-full bg-[#5fe3a1]/10 blur-[120px]"></div>
+    <div class="orb orb-2 absolute top-1/3 -right-32 w-[34rem] h-[34rem] rounded-full bg-[#2d6a4f]/20 blur-[130px]"></div>
+    <div class="orb orb-1 absolute bottom-0 left-1/4 w-[28rem] h-[28rem] rounded-full bg-[#1b3a2e]/30 blur-[120px]"></div>
+  </div>
+
+  <!-- ============ NAVIGATION ============ -->
+  <header class="fixed top-0 inset-x-0 z-40">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 mt-4">
+      <div class="sig flex items-center justify-between rounded-full backdrop-blur-xl bg-white/[0.04] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] pl-5 pr-3 py-2.5">
+        <a href="#top" class="flex items-center gap-2.5 group">
+          <span class="grid place-items-center w-8 h-8 rounded-xl bg-accent text-ink font-display font-extrabold text-lg sig group-hover:rotate-[-8deg]">C</span>
+          <span class="font-display font-extrabold text-lg tracking-tight text-white">CODIN</span>
+        </a>
+        <div class="hidden md:flex items-center gap-1 text-sm text-white/70">
+          <a href="#products" class="sig px-4 py-2 rounded-full hover:bg-white/5 hover:text-white">서비스</a>
+          <a href="#capabilities" class="sig px-4 py-2 rounded-full hover:bg-white/5 hover:text-white">우리가 하는 일</a>
+          <a href="#voices" class="sig px-4 py-2 rounded-full hover:bg-white/5 hover:text-white">고객 이야기</a>
+          <a href="#contact" class="sig px-4 py-2 rounded-full hover:bg-white/5 hover:text-white">문의</a>
+        </div>
+        <a href="#contact" class="hidden md:inline-flex items-center gap-2 sig rounded-full bg-white text-ink font-semibold text-sm pl-5 pr-2 py-2 hover:scale-[1.03] active:scale-[0.98]">
+          시작하기
+          <span class="grid place-items-center w-7 h-7 rounded-full bg-black/10">
+            <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
+          </span>
+        </a>
+        <button id="menuBtn" class="md:hidden grid place-items-center w-10 h-10 rounded-full hover:bg-white/5 sig text-white" aria-label="메뉴 열기">
+          <iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl"></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 backdrop-blur-3xl bg-ink/90 opacity-0 pointer-events-none -translate-y-4 md:hidden">
+    <div class="flex flex-col h-full px-6 pt-6">
+      <div class="flex items-center justify-between">
+        <span class="font-display font-extrabold text-lg text-white">CODIN</span>
+        <button id="menuClose" class="grid place-items-center w-10 h-10 rounded-full hover:bg-white/5 sig text-white" aria-label="메뉴 닫기">
+          <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-2 mt-16 text-3xl font-display font-semibold text-white">
+        <a href="#products" class="mob-link sig py-3 border-b border-white/5">서비스</a>
+        <a href="#capabilities" class="mob-link sig py-3 border-b border-white/5">우리가 하는 일</a>
+        <a href="#voices" class="mob-link sig py-3 border-b border-white/5">고객 이야기</a>
+        <a href="#contact" class="mob-link sig py-3 border-b border-white/5">문의</a>
+      </nav>
+      <a href="#contact" class="mob-link mt-auto mb-10 inline-flex items-center justify-center gap-2 sig rounded-full bg-accent text-ink font-bold text-lg px-6 py-4 active:scale-[0.98]">
+        무료로 상담받기
+        <iconify-icon icon="solar:arrow-right-linear" class="text-xl"></iconify-icon>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" class="relative min-h-[100dvh] flex items-center pt-32 pb-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+        <div class="lg:col-span-7">
+          <div class="reveal inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] font-medium bg-accent/10 text-accent border border-accent/20" style="--i:0">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+            Product Company
+          </div>
+
+          <h1 class="reveal mt-6 font-display font-extrabold tracking-tight leading-[1.05] text-5xl sm:text-6xl lg:text-7xl break-keep" style="--i:1">
+            <span class="text-gradient">만드는 모든 것을</span><br>
+            <span class="text-accent">서비스로.</span>
+          </h1>
+
+          <p class="reveal mt-7 text-lg md:text-xl text-white/60 leading-relaxed max-w-[44ch] break-keep" style="--i:2">
+            CODIN은 기획부터 디자인, 개발, 운영까지 한 팀 안에서 완결합니다.
+            사람들이 매일 손에 쥐고 쓰는 앱 서비스를, 처음부터 끝까지 직접 만듭니다.
+          </p>
+
+          <div class="reveal mt-10 flex flex-col sm:flex-row gap-3" style="--i:3">
+            <a href="#products" class="group inline-flex items-center justify-center gap-2 sig rounded-full bg-white text-ink font-bold text-lg pl-7 pr-3 py-4 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(95,227,161,0.0)] hover:shadow-[0_0_40px_rgba(95,227,161,0.18)]">
+              서비스 둘러보기
+              <span class="grid place-items-center w-9 h-9 rounded-full bg-black/10 sig group-hover:translate-x-1">
+                <iconify-icon icon="solar:arrow-right-linear" class="text-xl"></iconify-icon>
+              </span>
+            </a>
+            <a href="#contact" class="inline-flex items-center justify-center gap-2 sig rounded-full bg-white/5 border border-white/10 text-white font-semibold text-lg px-7 py-4 hover:bg-white/10 active:scale-[0.98]">
+              <iconify-icon icon="solar:chat-round-line-linear" class="text-xl text-accent"></iconify-icon>
+              팀과 이야기하기
+            </a>
+          </div>
+
+          <div class="reveal mt-12 flex flex-wrap items-center gap-x-8 gap-y-4" style="--i:4">
+            <div>
+              <div class="font-display font-extrabold text-3xl text-white">128만+</div>
+              <div class="text-sm text-white/40 mt-0.5">누적 다운로드</div>
+            </div>
+            <div class="w-px h-10 bg-white/10 hidden sm:block"></div>
+            <div>
+              <div class="font-display font-extrabold text-3xl text-white">4.87<span class="text-xl text-white/40">/5.0</span></div>
+              <div class="text-sm text-white/40 mt-0.5">앱스토어 평점</div>
+            </div>
+            <div class="w-px h-10 bg-white/10 hidden sm:block"></div>
+            <div>
+              <div class="font-display font-extrabold text-3xl text-white">17개</div>
+              <div class="text-sm text-white/40 mt-0.5">운영 중 서비스</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero device mock -->
+        <div class="reveal lg:col-span-5 relative" style="--i:3">
+          <div class="relative mx-auto w-[260px] sm:w-[300px]">
+            <div class="absolute -inset-6 bg-accent/15 blur-3xl rounded-[3rem]"></div>
+            <div class="relative rounded-[2.8rem] bg-white/[0.05] ring-1 ring-white/10 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_40px_80px_-20px_rgba(0,0,0,0.7)]">
+              <div class="rounded-[2.4rem] bg-[#0b0b0b] overflow-hidden">
+                <div class="px-6 pt-7 pb-5 flex items-center justify-between">
+                  <div>
+                    <p class="text-[11px] text-white/40">좋은 아침이에요</p>
+                    <p class="font-display font-bold text-white text-lg">오늘의 CODIN</p>
+                  </div>
+                  <div class="w-9 h-9 rounded-full bg-accent grid place-items-center text-ink font-display font-extrabold">C</div>
+                </div>
+                <div class="px-4 space-y-3 pb-6">
+                  <div class="rounded-2xl bg-gradient-to-br from-accent/25 to-accent/5 border border-accent/20 p-4">
+                    <div class="flex items-center gap-2 text-accent text-xs font-semibold"><iconify-icon icon="solar:bolt-linear"></iconify-icon> 실시간</div>
+                    <p class="mt-2 text-white font-semibold leading-snug break-keep">오늘 3,204명이 함께하고 있어요</p>
+                  </div>
+                  <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 grid place-items-center text-accent"><iconify-icon icon="solar:graph-up-linear" class="text-xl"></iconify-icon></div>
+                    <div><p class="text-white text-sm font-semibold">이번 주 활동</p><p class="text-white/40 text-xs">+18.4% 증가</p></div>
+                  </div>
+                  <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/5 grid place-items-center text-accent"><iconify-icon icon="solar:heart-linear" class="text-xl"></iconify-icon></div>
+                    <div><p class="text-white text-sm font-semibold">관심 서비스 5개</p><p class="text-white/40 text-xs">새 소식 2건</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- floating badge -->
+            <div class="orb orb-2 absolute -left-10 top-24 hidden sm:flex items-center gap-2 rounded-2xl backdrop-blur-xl bg-white/10 border border-white/10 px-3 py-2 shadow-xl">
+              <iconify-icon icon="solar:star-bold" class="text-accent text-lg"></iconify-icon>
+              <span class="text-xs text-white font-semibold">평점 4.87</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/30 flex flex-col items-center gap-1 reveal" style="--i:5">
+      <span class="text-[11px] tracking-widest uppercase">Scroll</span>
+      <iconify-icon icon="solar:alt-arrow-down-linear" class="animate-bounce"></iconify-icon>
+    </div>
+  </section>
+
+  <!-- ============ TRUST MARQUEE ============ -->
+  <section class="py-12 border-y border-white/5 bg-white/[0.015]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <p class="text-center text-xs uppercase tracking-[0.2em] text-white/30 mb-8">함께 만들고, 함께 성장한 팀</p>
+      <div class="marquee-mask overflow-hidden">
+        <div class="marquee-track flex items-center gap-14 w-max">
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">스텔라랩스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">베리파이</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">루미너스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">플로우캔버스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">넥스트비전</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">브릿지웍스</span>
+          <!-- duplicate for seamless loop -->
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">스텔라랩스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">베리파이</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">루미너스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">플로우캔버스</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">넥스트비전</span>
+          <span class="font-display font-bold text-2xl text-white/35 whitespace-nowrap">브릿지웍스</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS (Bento) ============ -->
+  <section id="products" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-2xl mb-14">
+        <div class="reveal inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.15em] font-medium bg-accent/10 text-accent">Our Services</div>
+        <h2 class="reveal mt-5 font-display font-extrabold text-4xl md:text-5xl tracking-tight leading-tight text-white break-keep" style="--i:1">
+          하나의 앱이 아니라,<br>여러 개의 일상을 만듭니다
+        </h2>
+        <p class="reveal mt-4 text-lg text-white/55 leading-relaxed break-keep" style="--i:2">
+          CODIN은 분야를 가리지 않고 사람들에게 필요한 서비스를 직접 기획하고 운영합니다.
+          지금 이 순간에도 다음 서비스가 만들어지고 있습니다.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-4 auto-rows-[minmax(180px,auto)]">
+
+        <!-- big card -->
+        <div class="reveal md:col-span-4 md:row-span-2 group sig rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5 hover:ring-accent/30 sig" style="--i:0">
+          <div class="h-full rounded-[1.6rem] bg-gradient-to-br from-[#0d0d0d] to-[#080808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] p-7 sm:p-9 flex flex-col">
+            <div class="flex items-center justify-between">
+              <span class="grid place-items-center w-12 h-12 rounded-2xl bg-accent/15 text-accent"><iconify-icon icon="solar:users-group-rounded-linear" class="text-2xl"></iconify-icon></span>
+              <span class="text-xs px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold">대표 서비스</span>
+            </div>
+            <h3 class="mt-6 font-display font-bold text-2xl sm:text-3xl text-white">커뮤니티 &amp; 소셜</h3>
+            <p class="mt-3 text-white/55 leading-relaxed max-w-[42ch] break-keep">
+              익명으로 솔직하게, 때로는 가까운 사람들과 깊게. 관심사로 모인 사람들이
+              부담 없이 연결되는 소통 공간을 만듭니다. 신고·차단·운영 정책까지 직접 설계합니다.
+            </p>
+            <div class="mt-auto pt-8 flex flex-wrap gap-2">
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60">익명 피드</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60">실시간 채팅</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60">관심사 매칭</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- two small -->
+        <div class="reveal md:col-span-2 group sig rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5 hover:ring-accent/30" style="--i:1">
+          <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] p-6 flex flex-col">
+            <span class="grid place-items-center w-11 h-11 rounded-2xl bg-white/5 text-accent"><iconify-icon icon="solar:wallet-money-linear" class="text-2xl"></iconify-icon></span>
+            <h3 class="mt-5 font-display font-bold text-xl text-white">생활 &amp; 금융 도구</h3>
+            <p class="mt-2 text-sm text-white/50 leading-relaxed break-keep">가계부, 구독 관리, 목표 저축까지. 매일의 돈 흐름을 가볍게 정리합니다.</p>
+          </div>
+        </div>
+
+        <div class="reveal md:col-span-2 group sig rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5 hover:ring-accent/30" style="--i:2">
+          <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] p-6 flex flex-col">
+            <span class="grid place-items-center w-11 h-11 rounded-2xl bg-white/5 text-accent"><iconify-icon icon="solar:notebook-linear" class="text-2xl"></iconify-icon></span>
+            <h3 class="mt-5 font-display font-bold text-xl text-white">기록 &amp; 습관</h3>
+            <p class="mt-2 text-sm text-white/50 leading-relaxed break-keep">하루를 남기고, 작은 습관을 이어갑니다. 꾸준함이 데이터가 되는 경험.</p>
+          </div>
+        </div>
+
+        <!-- wide bottom -->
+        <div class="reveal md:col-span-3 group sig rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5 hover:ring-accent/30" style="--i:3">
+          <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] p-6 flex items-center gap-5">
+            <span class="shrink-0 grid place-items-center w-12 h-12 rounded-2xl bg-white/5 text-accent"><iconify-icon icon="solar:gameboy-linear" class="text-2xl"></iconify-icon></span>
+            <div>
+              <h3 class="font-display font-bold text-xl text-white">콘텐츠 &amp; 엔터테인먼트</h3>
+              <p class="mt-1.5 text-sm text-white/50 leading-relaxed break-keep">짧은 순간을 즐겁게 채우는 가벼운 콘텐츠 서비스.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal md:col-span-3 group sig rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5 hover:ring-accent/30" style="--i:4">
+          <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] p-6 flex items-center gap-5">
+            <span class="shrink-0 grid place-items-center w-12 h-12 rounded-2xl bg-white/5 text-accent"><iconify-icon icon="solar:health-linear" class="text-2xl"></iconify-icon></span>
+            <div>
+              <h3 class="font-display font-bold text-xl text-white">건강 &amp; 웰니스</h3>
+              <p class="mt-1.5 text-sm text-white/50 leading-relaxed break-keep">운동, 식단, 마음 챙김. 몸과 마음을 돌보는 작은 루틴.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAPABILITIES (Zig-zag) ============ -->
+  <section id="capabilities" class="py-24 md:py-32 border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-2xl mb-16">
+        <div class="reveal inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.15em] font-medium bg-accent/10 text-accent">How We Work</div>
+        <h2 class="reveal mt-5 font-display font-extrabold text-4xl md:text-5xl tracking-tight leading-tight text-white break-keep" style="--i:1">
+          기획부터 운영까지,<br>한 팀에서 끝냅니다
+        </h2>
+      </div>
+
+      <div class="space-y-6">
+        <!-- row 1 -->
+        <div class="reveal grid md:grid-cols-2 gap-6 items-stretch">
+          <div class="rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+              <span class="font-display text-accent/40 font-extrabold text-5xl">01</span>
+              <h3 class="mt-4 font-display font-bold text-2xl text-white">발견과 기획</h3>
+              <p class="mt-3 text-white/55 leading-relaxed break-keep">
+                "이거 불편한데?" 라는 순간에서 출발합니다. 사용자 인터뷰와 데이터로
+                진짜 문제를 가려내고, 가장 작은 형태의 해결책부터 정의합니다.
+              </p>
+            </div>
+          </div>
+          <div class="rounded-[2rem] bg-gradient-to-br from-accent/10 to-transparent ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b]/60 p-8 flex flex-col justify-center gap-4">
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:magnifer-linear" class="text-2xl text-accent"></iconify-icon> 사용자 리서치</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:lightbulb-linear" class="text-2xl text-accent"></iconify-icon> 문제 정의 &amp; 가설</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:map-linear" class="text-2xl text-accent"></iconify-icon> 로드맵 설계</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- row 2 reversed -->
+        <div class="reveal grid md:grid-cols-2 gap-6 items-stretch">
+          <div class="md:order-2 rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+              <span class="font-display text-accent/40 font-extrabold text-5xl">02</span>
+              <h3 class="mt-4 font-display font-bold text-2xl text-white">디자인과 개발</h3>
+              <p class="mt-3 text-white/55 leading-relaxed break-keep">
+                손에 착 감기는 인터랙션과 단단한 코드. 디자이너와 개발자가 같은 화면을 보며
+                iOS·Android·서버를 함께 만듭니다. 출시 전 수십 번을 직접 써봅니다.
+              </p>
+            </div>
+          </div>
+          <div class="md:order-1 rounded-[2rem] bg-gradient-to-br from-accent/10 to-transparent ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b]/60 p-8 flex flex-col justify-center gap-4">
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:pen-new-square-linear" class="text-2xl text-accent"></iconify-icon> UX/UI 디자인</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:smartphone-linear" class="text-2xl text-accent"></iconify-icon> 네이티브 앱 개발</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:server-linear" class="text-2xl text-accent"></iconify-icon> 백엔드 &amp; 인프라</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- row 3 -->
+        <div class="reveal grid md:grid-cols-2 gap-6 items-stretch">
+          <div class="rounded-[2rem] bg-white/[0.04] ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b] p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]">
+              <span class="font-display text-accent/40 font-extrabold text-5xl">03</span>
+              <h3 class="mt-4 font-display font-bold text-2xl text-white">운영과 성장</h3>
+              <p class="mt-3 text-white/55 leading-relaxed break-keep">
+                출시는 시작일 뿐입니다. 매일의 지표를 읽고, 사용자 피드백에 빠르게 답하며
+                서비스를 살아 있게 가꿉니다. 작은 개선이 쌓여 신뢰가 됩니다.
+              </p>
+            </div>
+          </div>
+          <div class="rounded-[2rem] bg-gradient-to-br from-accent/10 to-transparent ring-1 ring-white/10 p-1.5">
+            <div class="h-full rounded-[1.6rem] bg-[#0b0b0b]/60 p-8 flex flex-col justify-center gap-4">
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:chart-2-linear" class="text-2xl text-accent"></iconify-icon> 데이터 분석</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:dialog-2-linear" class="text-2xl text-accent"></iconify-icon> 고객 응대 &amp; CS</div>
+              <div class="flex items-center gap-3 text-white/70"><iconify-icon icon="solar:refresh-circle-linear" class="text-2xl text-accent"></iconify-icon> 지속적 업데이트</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METRICS BAND ============ -->
+  <section class="py-20 border-y border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+        <div class="reveal" style="--i:0">
+          <div class="font-display font-extrabold text-4xl md:text-5xl text-white">128만+</div>
+          <p class="mt-2 text-sm text-white/45 break-keep">누적 다운로드</p>
+        </div>
+        <div class="reveal" style="--i:1">
+          <div class="font-display font-extrabold text-4xl md:text-5xl text-accent">98.7%</div>
+          <p class="mt-2 text-sm text-white/45 break-keep">크래시 없는 세션</p>
+        </div>
+        <div class="reveal" style="--i:2">
+          <div class="font-display font-extrabold text-4xl md:text-5xl text-white">2.3초</div>
+          <p class="mt-2 text-sm text-white/45 break-keep">평균 첫 화면 로딩</p>
+        </div>
+        <div class="reveal" style="--i:3">
+          <div class="font-display font-extrabold text-4xl md:text-5xl text-white">42,800+</div>
+          <p class="mt-2 text-sm text-white/45 break-keep">월간 활성 사용자</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS (Masonry) ============ -->
+  <section id="voices" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-2xl mb-14">
+        <div class="reveal inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.15em] font-medium bg-accent/10 text-accent">Voices</div>
+        <h2 class="reveal mt-5 font-display font-extrabold text-4xl md:text-5xl tracking-tight leading-tight text-white break-keep" style="--i:1">
+          쓰는 사람들의 이야기
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        <!-- col 1 -->
+        <div class="flex flex-col gap-5">
+          <div class="reveal rounded-[1.8rem] bg-white/[0.04] ring-1 ring-white/10 p-7 sig hover:ring-white/20" style="--i:0">
+            <div class="flex items-center gap-1 text-accent mb-4">
+              <iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon>
+            </div>
+            <p class="text-white/80 leading-relaxed break-keep">"군더더기 없이 딱 필요한 것만 있어요. 매일 아침 제일 먼저 켜는 앱이 됐습니다. 업데이트도 빠르고요."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-hayunseo" alt="하윤서 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">하윤서</p><p class="text-white/40 text-xs">프로덕트 디자이너</p></div>
+            </div>
+          </div>
+          <div class="reveal rounded-[1.8rem] bg-gradient-to-br from-accent/15 to-transparent ring-1 ring-accent/20 p-7" style="--i:3">
+            <p class="font-display text-white text-xl font-semibold leading-snug break-keep">"광고로 도배된 앱에 지쳤다면, CODIN을 써보세요."</p>
+            <div class="mt-5 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-parkdohyun" alt="박도현 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">박도현</p><p class="text-white/50 text-xs">스타트업 대표</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- col 2 -->
+        <div class="flex flex-col gap-5 md:mt-8">
+          <div class="reveal rounded-[1.8rem] bg-white/[0.04] ring-1 ring-white/10 p-7 sig hover:ring-white/20" style="--i:1">
+            <div class="flex items-center gap-1 text-accent mb-4">
+              <iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon>
+            </div>
+            <p class="text-white/80 leading-relaxed break-keep">"문의를 남겼는데 그날 바로 답이 왔어요. 작은 의견도 다음 업데이트에 반영되는 게 느껴져서 계속 쓰게 돼요."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-leeseojin" alt="이서진 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">이서진</p><p class="text-white/40 text-xs">마케팅 리드</p></div>
+            </div>
+          </div>
+          <div class="reveal rounded-[1.8rem] bg-white/[0.04] ring-1 ring-white/10 p-7 sig hover:ring-white/20" style="--i:4">
+            <div class="flex items-center gap-1 text-accent mb-4">
+              <iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-half-bold"></iconify-icon>
+            </div>
+            <p class="text-white/80 leading-relaxed break-keep">"디자인이 정말 깔끔해요. 화면 하나하나 정성 들인 게 보입니다. 무거운 기능 없이도 충분히 똑똑해요."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-kimhaneul" alt="김하늘 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">김하늘</p><p class="text-white/40 text-xs">프론트엔드 개발자</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- col 3 -->
+        <div class="flex flex-col gap-5">
+          <div class="reveal rounded-[1.8rem] bg-white/[0.04] ring-1 ring-white/10 p-7 sig hover:ring-white/20" style="--i:2">
+            <div class="flex items-center gap-1 text-accent mb-4">
+              <iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon>
+            </div>
+            <p class="text-white/80 leading-relaxed break-keep">"여러 서비스를 써봤는데 결이 다 비슷해서 좋아요. 하나가 마음에 들면 다른 것도 믿고 깔게 되더라고요."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-jeongminjun" alt="정민준 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">정민준</p><p class="text-white/40 text-xs">브랜드 디렉터</p></div>
+            </div>
+          </div>
+          <div class="reveal rounded-[1.8rem] bg-white/[0.04] ring-1 ring-white/10 p-7 sig hover:ring-white/20" style="--i:5">
+            <div class="flex items-center gap-1 text-accent mb-4">
+              <iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon><iconify-icon icon="solar:star-bold"></iconify-icon>
+            </div>
+            <p class="text-white/80 leading-relaxed break-keep">"개인정보를 과하게 요구하지 않아서 안심하고 써요. 꼭 필요한 권한만 묻는 게 신뢰가 가요."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <img loading="lazy" decoding="async" src="https://i.pravatar.cc/96?u=codin-oyerin" alt="오예린 프로필" class="w-10 h-10 rounded-full object-cover">
+              <div><p class="text-white text-sm font-semibold">오예린</p><p class="text-white/40 text-xs">UX 리서처</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA / CONTACT ============ -->
+  <section id="contact" class="py-24 md:py-32">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="relative overflow-hidden rounded-[2.5rem] ring-1 ring-white/10 bg-gradient-to-b from-[#0e0e0e] to-[#070707] p-1.5">
+        <div class="relative rounded-[2rem] px-6 py-16 sm:px-12 sm:py-20 text-center overflow-hidden">
+          <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] bg-accent/15 blur-[120px] rounded-full pointer-events-none"></div>
+          <div class="relative">
+            <div class="reveal inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.15em] font-medium bg-accent/10 text-accent border border-accent/20">Let's Build</div>
+            <h2 class="reveal mt-6 font-display font-extrabold text-4xl md:text-6xl tracking-tight leading-tight text-white break-keep" style="--i:1">
+              만들고 싶은 게 있나요?
+            </h2>
+            <p class="reveal mt-5 text-lg text-white/55 max-w-[46ch] mx-auto leading-relaxed break-keep" style="--i:2">
+              새로운 서비스 제안도, 협업 문의도, 그냥 궁금한 점도 좋습니다.
+              CODIN 팀이 직접 읽고 빠르게 답해 드립니다.
+            </p>
+            <div class="reveal mt-10 flex flex-col sm:flex-row gap-3 justify-center" style="--i:3">
+              <a href="mailto:hello@codin.app" class="group inline-flex items-center justify-center gap-2 sig rounded-full bg-accent text-ink font-bold text-lg pl-7 pr-3 py-4 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(95,227,161,0.25)]">
+                hello@codin.app
+                <span class="grid place-items-center w-9 h-9 rounded-full bg-black/15 sig group-hover:translate-x-1">
+                  <iconify-icon icon="solar:arrow-right-linear" class="text-xl"></iconify-icon>
+                </span>
+              </a>
+              <a href="#products" class="inline-flex items-center justify-center gap-2 sig rounded-full bg-white/5 border border-white/10 text-white font-semibold text-lg px-7 py-4 hover:bg-white/10 active:scale-[0.98]">
+                서비스 다시 보기
+              </a>
+            </div>
+            <p class="reveal mt-8 text-sm text-white/35 break-keep" style="--i:4">평일 기준 24시간 이내 회신 · 상담은 언제나 무료입니다</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-white/5 py-14">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-10">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-2.5">
+            <span class="grid place-items-center w-8 h-8 rounded-xl bg-accent text-ink font-display font-extrabold text-lg">C</span>
+            <span class="font-display font-extrabold text-lg tracking-tight text-white">CODIN</span>
+          </div>
+          <p class="mt-4 text-sm text-white/45 leading-relaxed break-keep">
+            만드는 모든 것을 서비스로. CODIN은 사람들이 매일 쓰는 앱 서비스를 직접 기획하고 운영하는 프로덕트 컴퍼니입니다.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-10 gap-y-6 text-sm">
+          <div>
+            <p class="text-white/40 mb-3 font-semibold">서비스</p>
+            <ul class="space-y-2.5 text-white/60">
+              <li><a href="#products" class="sig hover:text-white">전체 서비스</a></li>
+              <li><a href="#capabilities" class="sig hover:text-white">우리가 하는 일</a></li>
+              <li><a href="#voices" class="sig hover:text-white">고객 이야기</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-white/40 mb-3 font-semibold">회사</p>
+            <ul class="space-y-2.5 text-white/60">
+              <li><a href="#contact" class="sig hover:text-white">문의하기</a></li>
+              <li><a href="mailto:hello@codin.app" class="sig hover:text-white">제휴 · 채용</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-white/40 mb-3 font-semibold">연결</p>
+            <div class="flex gap-2">
+              <a href="mailto:hello@codin.app" aria-label="이메일" class="grid place-items-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white/70 sig hover:bg-white/10 hover:text-white"><iconify-icon icon="solar:letter-linear"></iconify-icon></a>
+              <a href="#top" aria-label="인스타그램" class="grid place-items-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white/70 sig hover:bg-white/10 hover:text-white"><iconify-icon icon="solar:gallery-linear"></iconify-icon></a>
+              <a href="#top" aria-label="맨 위로" class="grid place-items-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-white/70 sig hover:bg-white/10 hover:text-white"><iconify-icon icon="solar:arrow-up-linear"></iconify-icon></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-white/35">
+        <p>© 2026 CODIN. All rights reserved.</p>
+        <p>hello@codin.app</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    // Mobile menu
+    const menu = document.getElementById('mobileMenu');
+    const open = () => { menu.classList.remove('opacity-0','pointer-events-none','-translate-y-4'); document.body.style.overflow = 'hidden'; };
+    const close = () => { menu.classList.add('opacity-0','pointer-events-none','-translate-y-4'); document.body.style.overflow = ''; };
+    document.getElementById('menuBtn').addEventListener('click', open);
+    document.getElementById('menuClose').addEventListener('click', close);
+    document.querySelectorAll('.mob-link').forEach((l) => l.addEventListener('click', close));
+  </script>
+</body>
+</html>
